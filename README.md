@@ -23,10 +23,21 @@ The model will be able to recommend a suitable place according to our questions.
     <img src="Figure/first_model.png" height="350"/>
 </p>
 
-**CNN** for Image<br/>
-**LSTM** for Question<br/>
-**RN** for Relation between two object<br/><br/>
+Our model contains 3 Deep-Learning techniques, which **CNN** for Image processing, **LSTM** for Text(Question) processing and
+**RN** for Relational reasoning between two object.<br/><br/><br/>
+
 
 ### Dataset
 
 Jeju Island POI(point-of-interst) [Dataset](https://www.data.go.kr/dataset/15004770/fileData.do)
+<p align="center">
+    <img src="Figure/Jeju_all_restarant.png" height="350"/>
+</p>
+
+The data contains the following information
+* Latitude
+* Longitude
+* Place type (Restaurant, Cafe, ...)
+* Place name
+* Place Adress<br/>
+
