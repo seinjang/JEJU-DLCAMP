@@ -28,3 +28,5 @@ The model will be able to recommend a suitable place according to our questions.
 **RN** for Relation between two object<br/><br/>
 
 ### Dataset
+
+Jeju Island POI(point-of-interst) [Dataset](https://www.data.go.kr/dataset/15004770/fileData.do)
