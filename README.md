@@ -41,3 +41,6 @@ The data contains the following information
 * Place name
 * Place Adress<br/>
 
+### Image
+
+<img src="/Figure/input_sample_1.png" alt="drawing" width="200px"/>
