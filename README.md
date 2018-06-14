@@ -16,4 +16,15 @@ What if, the Model can understand question ?
 <br/>
 The model will be able to recommend a suitable place according to our questions.
 
-## First draft of Model
+## First Draft Model
+
+### Model Architecture
+<p align="center">
+    <img src="Figure/first_model.png" height="350"/>
+</p>
+
+**CNN** for Image<br/>
+**LSTM** for Question<br/>
+**RN** for Relation between two object<br/><br/>
+
+### Dataset
