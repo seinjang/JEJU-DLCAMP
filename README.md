@@ -39,8 +39,25 @@ The data contains the following information
 * Longitude
 * Place type (Restaurant, Cafe, ...)
 * Place name
-* Place Adress<br/>
+* Place Adress<br/><br/>
 
-### Image
+At the beginning of the project, I decided to only consider the POI for restaurants in Jeju Island. Each **Image** has a number of 
+POIs which marked with red marker. Here are some examples of images.
+<img src="/Figure/image_sample.png" alt="drawing"/>
 
-<img src="/Figure/input_sample_1.png" alt="drawing" width="200px"/>
+Also, the center(user position) **location** of the image, boundary location information and the location information of all restaurants POI in Jeju Island are required for input.
+
+*{center : latitude, longitude}<br/>
+{boundary : latitude(left), latitude(right), longitude(up), longitude(down)}<br/>
+{POI 1: latitude, longitude}, {POI2 : latitude, longitude},...*
+
+
+Among the various **Questions**, I will focus on the following questions first.<br/>
+* Where is the beachfront restaurant ?
+* Where is the nearest restaurant ?
+* Where is the restaurant with a nearby cafe ?
+* Where is the beachfront restaurant with a nearby cafe ?
+
+The possible answer is a softmax vector whose with probability for all POIs
+
+*[probability of POI 1, probability of POI 2, probability of POI 3,...,probability of POI n]*
