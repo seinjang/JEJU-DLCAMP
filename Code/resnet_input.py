@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[2]:
-
-
 """Efficient ImageNet input pipeline using tf.data.Dataset."""
 
 from __future__ import absolute_import
