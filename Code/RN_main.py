@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[48]:
-
-
 """Train a ResNet-50 model on TPU"""
 
 from __future__ import absolute_import
