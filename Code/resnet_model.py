@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[5]:
-
-
 """Contains definitions for the post-activation form of Residual Networks.
 
 Residual networks (ResNets) were proposed in:
