@@ -1,9 +1,4 @@
 
-# coding: utf-8
-
-# In[ ]:
-
-
 """Preprocessing for ResNet"""
 from __future__ import absolute_import
 from __future__ import division
