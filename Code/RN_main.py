@@ -12,7 +12,10 @@ import absl.logging as _logging
 import tensorflow as tf
 
 import Dataset_input
-import resnet_model
+import resnet_model # resnet for process map image
+import densenet_model # densenet for process question
+# import relationnet_model # for relation reasoning
+
 from tensorflow.contrib import summary
 from tensorflow.contrib.tpu.python.tpu import bfloat16
 from tensorflow.contrib.tpu.python.tpu import tpu_config
@@ -181,6 +184,7 @@ def learning_rate_schedule(current_epoch):
 
 def resnet_model_fn(features, labels, mode, params):
     """The model_fn for ResNet to be used with TPUEstimator."""
+    raise ValueError(features)
     if isinstance(features, dict):
         features = features['feature']
 
@@ -204,19 +208,20 @@ def resnet_model_fn(features, labels, mode, params):
             data_format=FLAGS.data_format)
         return network(
             inputs=features, is_training=(mode == tf.estimator.ModeKeys.TRAIN))
-    
+    """
+    def text_network():
+        network = densenet_model.densenet_121(
+            in_training=True,
+            num_classes=1001)
+        return network(
+            inputs=features, is_training=(mode == tf.estimator.ModeKeys.TRAIN))
 
-    # def text_network():
+    def relational_network(feature_maps, text_inputs):
+    """
 
-    # def relational_network(feature_maps, text_inputs):
-    print("Here!")
-    
-    # feature maps from resnet
-    feature_maps = resnet_network()
-    raise ValueError(feature_maps) # check !!
-    
+    feature_maps = resnet_network() # feature maps from resnet
+    raise ValueError(feature_maps)
     text_input = text_network()
-    
     logits = relational_network(feature_maps, text_inputs)
 
     batch_size = params['batch_size']
@@ -348,6 +353,7 @@ def main(unused_argv):
                 # At the end of training, a checkpoint will be written to --model_dir.
                 next_checkpoint = min(current_step + FLAGS.steps_per_eval,
                                       FLAGS.train_steps)
+                #raise(ValueError(imagenet_train.input_fn))
                 RN_classifier.train(
                     input_fn=imagenet_train.input_fn, max_steps=next_checkpoint)
                 current_step = next_checkpoint
