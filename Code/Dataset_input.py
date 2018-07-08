@@ -42,7 +42,7 @@ class ImageInput(object):
             self.data_dir = None
         self.transpose_input = transpose_input
 
-    def set_shapes(self, batch_size, images, labels):
+    def set_shapes(self, batch_size, images, questions, labels):
     #, questions, keywords, centers, places, num_places, boundaries):
         """Statically set the batch_size dimension."""
 
@@ -51,9 +51,9 @@ class ImageInput(object):
                 tf.TensorShape([batch_size, None, None, None])))
             labels.set_shape(labels.get_shape().merge_with(
                 tf.TensorShape([batch_size])))
-            """
             questions.set_shape(questions.get_shape().merge_with(
                 tf.TensorShape([batch_size])))
+            """
             keywords.set_shape(keywords.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
             centers.set_shape(centers.get_shape().merge_with(
@@ -71,9 +71,9 @@ class ImageInput(object):
                 tf.TensorShape([batch_size, None, None, None])))
             labels.set_shape(labels.get_shape().merge_with(
                 tf.TensorShape([batch_size])))
-            """
             questions.set_shape(questions.get_shape().merge_with(
                 tf.TensorShape([batch_size])))
+            """
             keywords.set_shape(keywords.get_shape().merge_with(
                 tf.TensorShape([batch_size])))
             centers.set_shape(centers.get_shape().merge_with(
@@ -85,8 +85,8 @@ class ImageInput(object):
             boundaries.set_shape(boundaries.get_shape().merge_with(
                 tf.TensorShape([batch_size])))
             """
-        print(images)
-        return images, labels #, questions, keywords, centers, places, num_places, boundaries
+
+        return images, questions, labels #, keywords, centers, places, num_places, boundaries
 
     def dataset_parser(self, value):
         """Parse an Imagedata record from a serialized string Tensor."""
@@ -125,7 +125,7 @@ class ImageInput(object):
             use_bfloat16=self.use_bfloat16)
 
 
-        return image, label #, question, keyword, center, place, num_place, boundary
+        return image, question, label #, question, keyword, center, place, num_place, boundary
 
 
     def input_fn(self,params):
@@ -170,6 +170,9 @@ class ImageInput(object):
 
         # Perfetch overlaps in-feed with training
         dataset = dataset.prefetch(tf.contrib.data.AUTOTUNE)
+
+        # raise ValueError(dataset)
+
         return dataset
 
     def input_fn_null(self, params):
