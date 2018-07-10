@@ -1,4 +1,4 @@
-"""Train a ResNet-50 model on TPU"""
+"""Train a ResNet-34 model on TPU"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -13,8 +13,8 @@ import tensorflow as tf
 
 import Dataset_input
 import resnet_model # resnet for process map image
-import densenet_model # densenet for process question
-# import relationnet_model # for relation reasoning
+import text_model # densenet for process question
+import relationnet_model # for relation reasoning
 
 from tensorflow.contrib import summary
 from tensorflow.contrib.tpu.python.tpu import bfloat16
@@ -60,7 +60,7 @@ flags.DEFINE_string(
           ' stored.'))
 
 flags.DEFINE_integer(
-    'resnet_depth', default=50,
+    'resnet_depth', default=34,
     help=('Depth of ResNet model to use. Must be one of {18, 34, 50, 101, 152,'
           ' 200}. ResNet-18 and 34 use the pre-activation residual blocks'
           ' without bottleneck layers. The other models use pre-activation'
@@ -184,20 +184,22 @@ def learning_rate_schedule(current_epoch):
 
 def resnet_model_fn(features, labels, mode, params):
     """The model_fn for ResNet to be used with TPUEstimator."""
-    raise ValueError(features)
-    if isinstance(features, dict):
-        features = features['feature']
 
+    if isinstance(features, dict):
+        feature_image = features['image']
+        feature_question = features['question']
+    """
     if FLAGS.data_format == 'channels_first':
         assert not FLAGS.transpose_input
-        features = tf.transpose(features, [0, 3, 1, 2])
+        feature_image = tf.transpose(feature_image, [0, 3, 1, 2])
 
     if FLAGS.transpose_input and mode != tf.estimator.ModeKeys.PREDICT:
-        features = tf.transpose(features, [3, 0, 1, 2])
+        feature_image = tf.transpose(feature_image, [3, 0, 1, 2])
+    """
 
     # Normalize the image to zero mean and unit variance.
-    #features -= tf.constant(MEAN_RGB, shape=[1, 1, 3], dtype=features.dtype)
-    #features /= tf.constant(STDDEV_RGB, shape=[1, 1, 3], dtype=features.dtype)
+    feature_image -= tf.constant(MEAN_RGB, shape=[128, 1, 1, 3], dtype=feature_image.dtype)
+    feature_image /= tf.constant(STDDEV_RGB, shape=[128, 1, 1, 3], dtype=feature_image.dtype)
 
     # This nested function allows us to avoid duplicating the logic which
     # builds the network, for different values of --precision.
@@ -207,22 +209,21 @@ def resnet_model_fn(features, labels, mode, params):
             num_classes=FLAGS.num_label_classes,
             data_format=FLAGS.data_format)
         return network(
-            inputs=features, is_training=(mode == tf.estimator.ModeKeys.TRAIN))
-    """
+            inputs=feature_image, is_training=(mode == tf.estimator.ModeKeys.TRAIN))
+
     def text_network():
-        network = densenet_model.densenet_121(
-            in_training=True,
-            num_classes=1001)
-        return network(
-            inputs=features, is_training=(mode == tf.estimator.ModeKeys.TRAIN))
+        return text_model.fully_connected(
+            inputs=feature_question)
 
-    def relational_network(feature_maps, text_inputs):
-    """
+    def relation_network(feature_maps, text_inputs):
+        return relationnet_model.relationnet(feature_maps, text_inputs)
 
-    feature_maps = resnet_network() # feature maps from resnet
-    raise ValueError(feature_maps)
-    text_input = text_network()
-    logits = relational_network(feature_maps, text_inputs)
+
+    image_feature_maps = resnet_network() # feature maps from resnet
+    text_feature = text_network()
+    rn_feature = relation_network(image_feature_maps, text_feature)
+    raise ValueError(image_feature_maps, text_feature, rn_feature)
+    #logits = relation_network(image_feature_maps, text_feature)
 
     batch_size = params['batch_size']
 
@@ -265,6 +266,7 @@ def resnet_model_fn(features, labels, mode, params):
 
 
 def main(unused_argv):
+
     if FLAGS.use_tpu:
         tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
             FLAGS.tpu,
@@ -281,6 +283,7 @@ def main(unused_argv):
             iterations_per_loop=FLAGS.iterations_per_loop,
             num_shards=FLAGS.num_cores,
             per_host_input_for_training=tpu_config.InputPipelineConfig.PER_HOST_V2))  # pylint: disable=line-too-long
+
 
     RN_classifier = tpu_estimator.TPUEstimator(
         use_tpu=FLAGS.use_tpu,
@@ -353,7 +356,6 @@ def main(unused_argv):
                 # At the end of training, a checkpoint will be written to --model_dir.
                 next_checkpoint = min(current_step + FLAGS.steps_per_eval,
                                       FLAGS.train_steps)
-                #raise(ValueError(imagenet_train.input_fn))
                 RN_classifier.train(
                     input_fn=imagenet_train.input_fn, max_steps=next_checkpoint)
                 current_step = next_checkpoint
@@ -366,6 +368,7 @@ def main(unused_argv):
                     input_fn=imagenet_eval.input_fn,
                     steps=FLAGS.num_eval_images // FLAGS.eval_batch_size)
                 tf.logging.info('Eval results: %s' % eval_results)
+
 
             elapsed_time = int(time.time() - start_timestamp)
             tf.logging.info('Finished training up to step %d. Elapsed seconds %d.' %
