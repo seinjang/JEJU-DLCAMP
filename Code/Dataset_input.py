@@ -8,7 +8,6 @@ import os
 
 import tensorflow as tf
 import functools
-
 import resnet_preprocessing
 
 
@@ -36,23 +35,22 @@ class ImageInput(object):
     def __init__(self, is_training, data_dir, use_bfloat16, transpose_input=True):
         self.image_preprocessing_fn = resnet_preprocessing.preprocess_image
         self.is_training = is_training
-        self.use_bfloat16 = use_bfloat16
+        # self.use_bfloat16 = use_bfloat16
         self.data_dir = data_dir
         if self.data_dir == 'null' or self.data_dir == '':
             self.data_dir = None
         self.transpose_input = transpose_input
 
     def set_shapes(self, batch_size, images, questions, labels):
-    #, questions, keywords, centers, places, num_places, boundaries):
-        """Statically set the batch_size dimension."""
 
+        """Statically set the batch_size dimension."""
         if self.transpose_input:
             images.set_shape(images.get_shape().merge_with(
                 tf.TensorShape([batch_size, None, None, None])))
             labels.set_shape(labels.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, 20])))
             questions.set_shape(questions.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, 3])))
             """
             keywords.set_shape(keywords.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
@@ -91,7 +89,7 @@ class ImageInput(object):
     def dataset_parser(self, value):
         """Parse an Imagedata record from a serialized string Tensor."""
         keys_to_features = {
-            'text/question':tf.FixedLenFeature((), tf.string, ''),
+            'text/question':tf.VarLenFeature(tf.float32),
             'text/keywords/key':tf.VarLenFeature(tf.int64),
             'image/center/x':tf.FixedLenFeature((), tf.float32),
             'image/center/y':tf.FixedLenFeature((), tf.float32),
@@ -102,12 +100,13 @@ class ImageInput(object):
             'image/boundary/xmax':tf.FixedLenFeature((), tf.float32),
             'image/boundary/ymin':tf.FixedLenFeature((), tf.float32),
             'image/boundary/ymax':tf.FixedLenFeature((), tf.float32),
-            'image/object/label':tf.FixedLenFeature([], tf.int64, -1),
+            'image/object/label':tf.VarLenFeature(tf.int64),
+            #'image/object/label':tf.FixedLenFeature([], tf.int64, -1),
             'image/encoded':tf.FixedLenFeature((), tf.string, '')
             }
 
         parsed = tf.parse_single_example(value, keys_to_features)
-        question = tf.reshape(parsed['text/question'], shape=[])
+        question = tf.sparse_tensor_to_dense(parsed['text/question'])
         keyword = tf.sparse_tensor_to_dense(parsed['text/keywords/key'])
         center = tf.stack([parsed['image/center/x'],parsed['image/center/y']])
         place = tf.stack([tf.sparse_tensor_to_dense(parsed['image/places/x']),
@@ -117,13 +116,12 @@ class ImageInput(object):
                              parsed['image/boundary/xmax'],
                              parsed['image/boundary/ymin'],
                              parsed['image/boundary/ymax']])
-        label = tf.cast(parsed['image/object/label'], tf.int32)
+        label = tf.sparse_tensor_to_dense(parsed['image/object/label'])
         image_bytes = tf.reshape(parsed['image/encoded'], shape=[])
         image = self.image_preprocessing_fn(
             image_bytes=image_bytes,
-            is_training=self.is_training,
-            use_bfloat16=self.use_bfloat16)
-
+            is_training=self.is_training)
+            #use_bfloat16=self.use_bfloat16)
 
         return image, question, label #, question, keyword, center, place, num_place, boundary
 
@@ -143,6 +141,7 @@ class ImageInput(object):
         file_pattern = os.path.join(
             self.data_dir, 'train/*' if self.is_training else 'validation/*')
         dataset = tf.data.Dataset.list_files(file_pattern, shuffle=self.is_training)
+
 
         if self.is_training:
             dataset = dataset.repeat()
@@ -171,9 +170,14 @@ class ImageInput(object):
         # Perfetch overlaps in-feed with training
         dataset = dataset.prefetch(tf.contrib.data.AUTOTUNE)
 
-        # raise ValueError(dataset)
+        (image, question, label) = dataset.make_one_shot_iterator().get_next()
+        features = {}
+        features['image'] = image
+        features['question'] = question
 
-        return dataset
+        # raise ValueError(features)
+
+        return features, label
 
     def input_fn_null(self, params):
         """Input function which provides null(black) images."""
