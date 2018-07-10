@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[5]:
-
-
 """Contains definitions for the post-activation form of Residual Networks.
 
 Residual networks (ResNets) were proposed in:
@@ -67,9 +61,9 @@ def fixed_padding(inputs, kernel_size, data_format='channels_first'):
 
 def conv2d_fixed_padding(inputs, filters, kernel_size, strides, data_format='channels_first'):
     """Strided 2-D convolution with explicit padding."""
+    # raise ValueError(inputs)
     if strides > 1:
         inputs = fixed_padding(inputs, kernel_size, data_format=data_format)
-
     return tf.layers.conv2d(
         inputs=inputs, filters=filters, kernel_size=kernel_size, strides=strides,
         padding=('SAME' if strides == 1 else 'VALID'), use_bias=False,
@@ -138,14 +132,15 @@ def resnet_v1_generator(block_fn, layers, num_classes, data_format='channels_fir
     """Generator for ResNet v1 models."""
     def model(inputs, is_training):
         """Creation of the model graph."""
+
         inputs = conv2d_fixed_padding(
             inputs=inputs, filters=64, kernel_size=7, strides=2, data_format=data_format)
         inputs = tf.identity(inputs, 'initial_conv')
         inputs = batch_norm_relu(inputs, is_training, data_format=data_format)
-
         inputs = tf.layers.max_pooling2d(
             inputs=inputs, pool_size=3, strides=2, padding='SAME', data_format=data_format)
         inputs = tf.identity(inputs, 'initial_max_pool')
+
 
         inputs = block_group(
             inputs=inputs, filters=64, block_fn=block_fn, blocks=layers[0],
@@ -163,12 +158,13 @@ def resnet_v1_generator(block_fn, layers, num_classes, data_format='channels_fir
             inputs=inputs, filters=512, block_fn=block_fn, blocks=layers[3],
             strides=2, is_training=is_training, name='block_group4',
             data_format=data_format)
-
+        """
         # The activation is 7x7 so this is a global average pool.
         inputs = tf.layers.average_pooling2d(
             inputs=inputs, pool_size=4, strides=1, padding='VALID', data_format=data_format)
         inputs = tf.identity(inputs, 'final_avg_pool')
         inputs = tf.reshape(inputs, [-1, 2048 if block_fn is bottleneck_block else 512])
+        """
         return inputs
 
     model.default_image_size = 224
