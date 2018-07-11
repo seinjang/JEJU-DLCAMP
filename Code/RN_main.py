@@ -5,6 +5,8 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+# Just disables the warning, doesn't enable AVX/FMA
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import time
 
 from absl import flags
@@ -91,7 +93,7 @@ flags.DEFINE_integer(
     'num_eval_images', default=304, help='Size of evaluation data set.')
 
 flags.DEFINE_integer(
-    'num_label_classes', default=452, help='Number of classes, at least 2')
+    'num_label_classes', default=20, help='Number of classes, at least 2')
 
 flags.DEFINE_integer(
     'steps_per_eval', default=1000,
@@ -115,7 +117,7 @@ flags.DEFINE_bool(
           ' keep up with the TPU-side computation.'))
 
 flags.DEFINE_integer(
-    'iterations_per_loop', default=100,
+    'iterations_per_loop', default=10,
     help=('Number of steps to run on TPU before outfeeding metrics to the CPU.'
           ' If the number of iterations in the loop would exceed the number of'
           ' train steps, the loop will exit before reaching'
@@ -188,6 +190,7 @@ def resnet_model_fn(features, labels, mode, params):
     if isinstance(features, dict):
         feature_image = features['image']
         feature_question = features['question']
+
     """
     if FLAGS.data_format == 'channels_first':
         assert not FLAGS.transpose_input
@@ -206,7 +209,6 @@ def resnet_model_fn(features, labels, mode, params):
     def resnet_network():
         network = resnet_model.resnet_v1(
             resnet_depth=FLAGS.resnet_depth,
-            num_classes=FLAGS.num_label_classes,
             data_format=FLAGS.data_format)
         return network(
             inputs=feature_image, is_training=(mode == tf.estimator.ModeKeys.TRAIN))
@@ -221,14 +223,14 @@ def resnet_model_fn(features, labels, mode, params):
 
     image_feature_maps = resnet_network() # feature maps from resnet
     text_feature = text_network()
-    rn_feature = relation_network(image_feature_maps, text_feature)
-    raise ValueError(image_feature_maps, text_feature, rn_feature)
-    #logits = relation_network(image_feature_maps, text_feature)
+    logits = relation_network(image_feature_maps, text_feature)
+    # raise ValueError(image_feature_maps, text_feature, rn_feature)
 
     batch_size = params['batch_size']
 
     # Calulate loss, which includes softmax cross entropy and L2 regularization.
-    one_hot_labels = tf.one_hot(labels, FLAGS.num_label_classes)
+    one_hot_labels = labels
+    one_hot_labels = tf.cast(one_hot_labels, dtype=tf.float32)
     cross_entropy = tf.losses.softmax_cross_entropy(
         logits=logits, onehot_labels=one_hot_labels)
 
