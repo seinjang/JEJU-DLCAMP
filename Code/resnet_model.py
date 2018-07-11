@@ -128,7 +128,7 @@ def block_group(inputs, filters, block_fn, blocks, strides, is_training, name, d
     return tf.identity(inputs, name)
 
 
-def resnet_v1_generator(block_fn, layers, num_classes, data_format='channels_first'):
+def resnet_v1_generator(block_fn, layers, data_format='channels_first'):
     """Generator for ResNet v1 models."""
     def model(inputs, is_training):
         """Creation of the model graph."""
@@ -140,7 +140,6 @@ def resnet_v1_generator(block_fn, layers, num_classes, data_format='channels_fir
         inputs = tf.layers.max_pooling2d(
             inputs=inputs, pool_size=3, strides=2, padding='SAME', data_format=data_format)
         inputs = tf.identity(inputs, 'initial_max_pool')
-
 
         inputs = block_group(
             inputs=inputs, filters=64, block_fn=block_fn, blocks=layers[0],
@@ -171,7 +170,7 @@ def resnet_v1_generator(block_fn, layers, num_classes, data_format='channels_fir
     return model
 
 
-def resnet_v1(resnet_depth, num_classes, data_format='channels_first'):
+def resnet_v1(resnet_depth, data_format='channels_first'):
     """Returns the ResNet model for a given size and number of output classes."""
     model_params = {
         18: {'block': residual_block, 'layers': [2, 2, 2, 2]},
@@ -187,4 +186,4 @@ def resnet_v1(resnet_depth, num_classes, data_format='channels_first'):
 
     params = model_params[resnet_depth]
     return resnet_v1_generator(
-        params['block'], params['layers'], num_classes, data_format)
+        params['block'], params['layers'], data_format)
