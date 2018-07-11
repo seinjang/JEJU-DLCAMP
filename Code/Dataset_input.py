@@ -41,8 +41,8 @@ class ImageInput(object):
             self.data_dir = None
         self.transpose_input = transpose_input
 
-    def set_shapes(self, batch_size, images, questions, labels):
-
+    def set_shapes(self, batch_size, images, questions, labels,
+                keywords, centers, places, num_places, boundaries):
         """Statically set the batch_size dimension."""
         if self.transpose_input:
             images.set_shape(images.get_shape().merge_with(
@@ -51,45 +51,42 @@ class ImageInput(object):
                 tf.TensorShape([batch_size, 20])))
             questions.set_shape(questions.get_shape().merge_with(
                 tf.TensorShape([batch_size, 3])))
-            """
             keywords.set_shape(keywords.get_shape().merge_with(
-                tf.TensorShape([batch_size, None])))
+                tf.TensorShape([batch_size, 4])))
             centers.set_shape(centers.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
             places.set_shape(places.get_shape().merge_with(
-                tf.TensorShape([batch_size, None, None])))
+                tf.TensorShape([batch_size, None, 20])))
             num_places.set_shape(num_places.get_shape().merge_with(
                 tf.TensorShape([batch_size])))
             boundaries.set_shape(boundaries.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
-            """
 
         else:
+            """
             images.set_shape(images.get_shape().merge_with(
                 tf.TensorShape([batch_size, None, None, None])))
             labels.set_shape(labels.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, 20])))
             questions.set_shape(questions.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
-            """
+                tf.TensorShape([batch_size, 3])))
             keywords.set_shape(keywords.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, 4])))
             centers.set_shape(centers.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, None])))
             places.set_shape(places.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, None, 20])))
             num_places.set_shape(num_places.get_shape().merge_with(
                 tf.TensorShape([batch_size])))
             boundaries.set_shape(boundaries.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, None])))
             """
-
-        return images, questions, labels #, keywords, centers, places, num_places, boundaries
+        return images, questions, labels, keywords, centers, places, num_places, boundaries
 
     def dataset_parser(self, value):
         """Parse an Imagedata record from a serialized string Tensor."""
         keys_to_features = {
-            'text/question':tf.VarLenFeature(tf.float32),
+            'text/question':tf.VarLenFeature(tf.int64),
             'text/keywords/key':tf.VarLenFeature(tf.int64),
             'image/center/x':tf.FixedLenFeature((), tf.float32),
             'image/center/y':tf.FixedLenFeature((), tf.float32),
@@ -101,7 +98,6 @@ class ImageInput(object):
             'image/boundary/ymin':tf.FixedLenFeature((), tf.float32),
             'image/boundary/ymax':tf.FixedLenFeature((), tf.float32),
             'image/object/label':tf.VarLenFeature(tf.int64),
-            #'image/object/label':tf.FixedLenFeature([], tf.int64, -1),
             'image/encoded':tf.FixedLenFeature((), tf.string, '')
             }
 
@@ -121,9 +117,21 @@ class ImageInput(object):
         image = self.image_preprocessing_fn(
             image_bytes=image_bytes,
             is_training=self.is_training)
-            #use_bfloat16=self.use_bfloat16)
+        """
+        merge = tf.stack([tf.cast(tf.sparse_tensor_to_dense(parsed['text/question']),dtype=tf.float32),
+                          tf.cast(tf.sparse_tensor_to_dense(parsed['text/keywords/key']),dtype=tf.float32),
+                          tf.stack([parsed['image/center/x'],parsed['image/center/y']]),
+                          tf.stack([tf.sparse_tensor_to_dense(parsed['image/places/x']),
+                                    tf.sparse_tensor_to_dense(parsed['image/places/y'])]),
+                          tf.cast(parsed['image/places/number'], dtype=tf.float32),
+                          tf.stack([parsed['image/boundary/xmin'],
+                                    parsed['image/boundary/xmax'],
+                                    parsed['image/boundary/ymin'],
+                                    parsed['image/boundary/ymax']])])
+        raise ValueError(merge)
+        """
 
-        return image, question, label #, question, keyword, center, place, num_place, boundary
+        return image, question, label, keyword, center, place, num_place, boundary
 
 
     def input_fn(self,params):
@@ -170,13 +178,20 @@ class ImageInput(object):
         # Perfetch overlaps in-feed with training
         dataset = dataset.prefetch(tf.contrib.data.AUTOTUNE)
 
-        (image, question, label) = dataset.make_one_shot_iterator().get_next()
+        (image, question, label, keyword,
+        center, place, num_place, boundary) = dataset.make_one_shot_iterator().get_next()
         features = {}
         features['image'] = image
-        features['question'] = question
-
-        # raise ValueError(features)
-
+        features['question'] = tf.cast(question, dtype=tf.float32)
+        features['keyword'] = tf.cast(keyword, dtype=tf.float32)
+        features['center'] = center
+        features['place'] = place
+        features['num_place'] = tf.cast(tf.reshape(num_place, [128,1]), dtype=tf.float32)
+        features['boundary'] = boundary
+        features['question'] = tf.concat([features['question'], features['keyword'],
+                                    features['center'], features['num_place'],
+                                    features['place'][:,0,:], features['place'][:,1,:],
+                                    features['boundary']],1)
         return features, label
 
     def input_fn_null(self, params):
