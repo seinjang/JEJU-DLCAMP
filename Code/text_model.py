@@ -6,7 +6,8 @@ import tensorflow as tf
 
 
 def fully_connected(inputs):
-    x = tf.layers.dense(inputs=inputs, units=256, activation=tf.nn.relu)
-    x = tf.layers.dense(inputs=x, units=512, activation=tf.nn.relu)
+    #inputs = tf.cast(inputs, dtype=tf.int32)
+    output = tf.layers.dense(inputs=inputs, units=256, activation=tf.nn.relu)
+    output = tf.layers.dense(inputs=output, units=512, activation=tf.nn.relu)
 
-    return x
+    return output
