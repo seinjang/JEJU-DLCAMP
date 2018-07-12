@@ -58,7 +58,7 @@ class ImageInput(object):
             places.set_shape(places.get_shape().merge_with(
                 tf.TensorShape([batch_size, None, 20])))
             num_places.set_shape(num_places.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, 1])))
             boundaries.set_shape(boundaries.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
 
@@ -186,7 +186,7 @@ class ImageInput(object):
         features['keyword'] = tf.cast(keyword, dtype=tf.float32)
         features['center'] = center
         features['place'] = place
-        features['num_place'] = tf.cast(tf.reshape(num_place, [128,1]), dtype=tf.float32)
+        features['num_place'] = tf.cast(num_place, dtype=tf.float32)
         features['boundary'] = boundary
         features['question'] = tf.concat([features['question'], features['keyword'],
                                     features['center'], features['num_place'],
