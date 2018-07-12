@@ -193,7 +193,6 @@ class ImageInput(object):
                                     features['center'], tf.reshape(features['num_place'], [128,1]),
                                     features['place'][:,0,:], features['place'][:,1,:],
                                     features['boundary']],1)
-        raise ValueError(features)
         return features, label
 
     def input_fn_null(self, params):
