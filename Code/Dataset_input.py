@@ -92,7 +92,7 @@ class ImageInput(object):
             'image/center/y':tf.FixedLenFeature((), tf.float32),
             'image/places/x':tf.VarLenFeature(tf.float32),
             'image/places/y':tf.VarLenFeature(tf.float32),
-            'image/places/number':tf.FixedLenFeature((), tf.int64),
+            'image/places/number':tf.FixedLenFeature([], tf.int64),
             'image/boundary/xmin':tf.FixedLenFeature((), tf.float32),
             'image/boundary/xmax':tf.FixedLenFeature((), tf.float32),
             'image/boundary/ymin':tf.FixedLenFeature((), tf.float32),
@@ -107,7 +107,7 @@ class ImageInput(object):
         center = tf.stack([parsed['image/center/x'],parsed['image/center/y']])
         place = tf.stack([tf.sparse_tensor_to_dense(parsed['image/places/x']),
                            tf.sparse_tensor_to_dense(parsed['image/places/y'])])
-        num_place = [parsed['image/places/number']]
+        num_place = parsed['image/places/number']
         boundary = tf.stack([parsed['image/boundary/xmin'],
                              parsed['image/boundary/xmax'],
                              parsed['image/boundary/ymin'],
@@ -117,19 +117,6 @@ class ImageInput(object):
         image = self.image_preprocessing_fn(
             image_bytes=image_bytes,
             is_training=self.is_training)
-        """
-        merge = tf.stack([tf.cast(tf.sparse_tensor_to_dense(parsed['text/question']),dtype=tf.float32),
-                          tf.cast(tf.sparse_tensor_to_dense(parsed['text/keywords/key']),dtype=tf.float32),
-                          tf.stack([parsed['image/center/x'],parsed['image/center/y']]),
-                          tf.stack([tf.sparse_tensor_to_dense(parsed['image/places/x']),
-                                    tf.sparse_tensor_to_dense(parsed['image/places/y'])]),
-                          tf.cast(parsed['image/places/number'], dtype=tf.float32),
-                          tf.stack([parsed['image/boundary/xmin'],
-                                    parsed['image/boundary/xmax'],
-                                    parsed['image/boundary/ymin'],
-                                    parsed['image/boundary/ymax']])])
-        
-        """
 
         return image, question, label, keyword, center, place, num_place, boundary
 
