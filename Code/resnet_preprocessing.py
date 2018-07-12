@@ -19,13 +19,8 @@ def _decode_and_center(image_bytes):
     
     return image
 
-def _flip(image):
-    image = tf.image.random_filp_left_right(image)
-    return image
-
 def preprocess_for_train(image_bytes, use_bfloat16):
     image = _decode_and_center(image_bytes)
-    image = _flip(image)
     image = tf.reshape(image, [IMAGE_SIZE, IMAGE_SIZE, 3])
     image = tf.image.convert_image_dtype(
         image, dtype=tf.bfloat16 if use_bfloat16 else tf.float32)
