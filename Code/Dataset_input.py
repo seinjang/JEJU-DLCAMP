@@ -58,7 +58,7 @@ class ImageInput(object):
             places.set_shape(places.get_shape().merge_with(
                 tf.TensorShape([batch_size, None, 20])))
             num_places.set_shape(num_places.get_shape().merge_with(
-                tf.TensorShape([batch_size, 1])))
+                tf.TensorShape([batch_size])))
             boundaries.set_shape(boundaries.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
 
@@ -107,7 +107,7 @@ class ImageInput(object):
         center = tf.stack([parsed['image/center/x'],parsed['image/center/y']])
         place = tf.stack([tf.sparse_tensor_to_dense(parsed['image/places/x']),
                            tf.sparse_tensor_to_dense(parsed['image/places/y'])])
-        num_place = tf.shape(tf.expand_dims(parsed['image/places/number'], 1))
+        num_place = parsed['image/places/number']
         boundary = tf.stack([parsed['image/boundary/xmin'],
                              parsed['image/boundary/xmax'],
                              parsed['image/boundary/ymin'],
@@ -167,6 +167,7 @@ class ImageInput(object):
 
         (image, question, label, keyword,
         center, place, num_place, boundary) = dataset.make_one_shot_iterator().get_next()
+        raise ValueError(num_place, tf.shape(tf.expand_dims(num_place, 1)))
         features = {}
         features['image'] = image
         features['question'] = tf.cast(question, dtype=tf.float32)
