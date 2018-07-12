@@ -58,7 +58,7 @@ class ImageInput(object):
             places.set_shape(places.get_shape().merge_with(
                 tf.TensorShape([batch_size, None, 20])))
             num_places.set_shape(num_places.get_shape().merge_with(
-                tf.TensorShape([batch_size, 1])))
+                tf.TensorShape([batch_size])))
             boundaries.set_shape(boundaries.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
 
