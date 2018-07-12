@@ -128,8 +128,9 @@ class ImageInput(object):
                                     parsed['image/boundary/xmax'],
                                     parsed['image/boundary/ymin'],
                                     parsed['image/boundary/ymax']])])
-        raise ValueError(merge)
+        
         """
+        raise ValueError(image, question, label, keyword, center, place, num_place, boundary)
 
         return image, question, label, keyword, center, place, num_place, boundary
 
