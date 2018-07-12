@@ -201,8 +201,8 @@ def resnet_model_fn(features, labels, mode, params):
     """
 
     # Normalize the image to zero mean and unit variance.
-    feature_image -= tf.constant(MEAN_RGB, shape=[128, 1, 1, 3], dtype=feature_image.dtype)
-    feature_image /= tf.constant(STDDEV_RGB, shape=[128, 1, 1, 3], dtype=feature_image.dtype)
+    feature_image -= tf.constant(MEAN_RGB, shape=[16, 1, 1, 3], dtype=feature_image.dtype)
+    feature_image /= tf.constant(STDDEV_RGB, shape=[16, 1, 1, 3], dtype=feature_image.dtype)
 
     # This nested function allows us to avoid duplicating the logic which
     # builds the network, for different values of --precision.
