@@ -147,7 +147,7 @@ class ImageInput(object):
 
         # Shuffle the filenames to ensure better randomization.
         file_pattern = os.path.join(
-            self.data_dir, 'train/*' if self.is_training else 'validation/*')
+            self.data_dir, 'train-*' if self.is_training else 'validation-*')
         dataset = tf.data.Dataset.list_files(file_pattern, shuffle=self.is_training)
 
 
