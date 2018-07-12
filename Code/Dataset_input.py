@@ -173,7 +173,7 @@ class ImageInput(object):
         features['keyword'] = tf.cast(keyword, dtype=tf.float32)
         features['center'] = center
         features['place'] = place
-        features['num_place'] = tf.cast(num_place, dtype=tf.float32)
+        features['num_place'] = tf.cast(tf.shape(tf.expand_dims(num_place, 1)), dtype=tf.float32)
         features['boundary'] = boundary
         features['question'] = tf.concat([features['question'], features['keyword'],
                                     features['center'], features['num_place'],
