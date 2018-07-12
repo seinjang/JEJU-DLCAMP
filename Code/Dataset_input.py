@@ -58,7 +58,7 @@ class ImageInput(object):
             places.set_shape(places.get_shape().merge_with(
                 tf.TensorShape([batch_size, None, 20])))
             num_places.set_shape(num_places.get_shape().merge_with(
-                tf.TensorShape([batch_size])))
+                tf.TensorShape([batch_size, 1])))
             boundaries.set_shape(boundaries.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
 
@@ -107,7 +107,7 @@ class ImageInput(object):
         center = tf.stack([parsed['image/center/x'],parsed['image/center/y']])
         place = tf.stack([tf.sparse_tensor_to_dense(parsed['image/places/x']),
                            tf.sparse_tensor_to_dense(parsed['image/places/y'])])
-        num_place = parsed['image/places/number']
+        num_place = [parsed['image/places/number']]
         boundary = tf.stack([parsed['image/boundary/xmin'],
                              parsed['image/boundary/xmax'],
                              parsed['image/boundary/ymin'],
@@ -186,7 +186,7 @@ class ImageInput(object):
         features['keyword'] = tf.cast(keyword, dtype=tf.float32)
         features['center'] = center
         features['place'] = place
-        features['num_place'] = tf.cast(tf.reshape(num_place, [16,1]), dtype=tf.float32)
+        features['num_place'] = tf.cast(num_place, dtype=tf.float32)
         features['boundary'] = boundary
         features['question'] = tf.concat([features['question'], features['keyword'],
                                     features['center'], features['num_place'],
