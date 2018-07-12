@@ -27,8 +27,8 @@ from tensorflow.contrib.training.python.training import evaluation
 from tensorflow.python.estimator import estimator
 ################################################################################################
 import logging
-logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
-logging.getLogger('googleapiclient.discovery').setLevel(logging.CRITICAL)
+logging.getLogger('googleapicliet.discovery_cache').setLevel(level=logging.ERROR)
+logging.getLogger('googleapiclient.discovery').setLevel(level=logging.DEBUG)
 ################################################################################################
 FLAGS = flags.FLAGS
 
