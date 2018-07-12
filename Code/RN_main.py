@@ -28,6 +28,7 @@ from tensorflow.python.estimator import estimator
 ################################################################################################
 import logging
 logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
+logging.getLogger('googleapiclient.discovery').setLevel(logging.CRITICAL)
 ################################################################################################
 FLAGS = flags.FLAGS
 
