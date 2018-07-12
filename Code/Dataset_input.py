@@ -117,6 +117,19 @@ class ImageInput(object):
         image = self.image_preprocessing_fn(
             image_bytes=image_bytes,
             is_training=self.is_training)
+        """
+        merge = tf.stack([tf.cast(tf.sparse_tensor_to_dense(parsed['text/question']),dtype=tf.float32),
+                          tf.cast(tf.sparse_tensor_to_dense(parsed['text/keywords/key']),dtype=tf.float32),
+                          tf.stack([parsed['image/center/x'],parsed['image/center/y']]),
+                          tf.stack([tf.sparse_tensor_to_dense(parsed['image/places/x']),
+                                    tf.sparse_tensor_to_dense(parsed['image/places/y'])]),
+                          tf.cast(parsed['image/places/number'], dtype=tf.float32),
+                          tf.stack([parsed['image/boundary/xmin'],
+                                    parsed['image/boundary/xmax'],
+                                    parsed['image/boundary/ymin'],
+                                    parsed['image/boundary/ymax']])])
+        raise ValueError(merge)
+        """
 
         return image, question, label, keyword, center, place, num_place, boundary
 
@@ -167,7 +180,7 @@ class ImageInput(object):
 
         (image, question, label, keyword,
         center, place, num_place, boundary) = dataset.make_one_shot_iterator().get_next()
-        raise ValueError(num_place, tf.shape(tf.expand_dims(num_place, 1)))
+
         features = {}
         features['image'] = image
         features['question'] = tf.cast(question, dtype=tf.float32)
@@ -177,9 +190,10 @@ class ImageInput(object):
         features['num_place'] = tf.cast(num_place, dtype=tf.float32)
         features['boundary'] = boundary
         features['question'] = tf.concat([features['question'], features['keyword'],
-                                    features['center'], features['num_place'],
+                                    features['center'], tf.reshape(features['num_place'], [128,1]),
                                     features['place'][:,0,:], features['place'][:,1,:],
                                     features['boundary']],1)
+        raise ValueError(features)
         return features, label
 
     def input_fn_null(self, params):
