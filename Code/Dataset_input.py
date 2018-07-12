@@ -81,7 +81,6 @@ class ImageInput(object):
             boundaries.set_shape(boundaries.get_shape().merge_with(
                 tf.TensorShape([batch_size, None])))
             """
-        raise ValueError(images, questions, labels, keywords, centers, places, num_places, boundaries)
         return images, questions, labels, keywords, centers, places, num_places, boundaries
 
     def dataset_parser(self, value):
