@@ -107,7 +107,7 @@ class ImageInput(object):
         center = tf.stack([parsed['image/center/x'],parsed['image/center/y']])
         place = tf.stack([tf.sparse_tensor_to_dense(parsed['image/places/x']),
                            tf.sparse_tensor_to_dense(parsed['image/places/y'])])
-        num_place = tf.shape(tf.expand_dim(parsed['image/places/number'], 1))
+        num_place = tf.shape(tf.expand_dims(parsed['image/places/number'], 1))
         boundary = tf.stack([parsed['image/boundary/xmin'],
                              parsed['image/boundary/xmax'],
                              parsed['image/boundary/ymin'],
