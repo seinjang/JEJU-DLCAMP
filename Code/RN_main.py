@@ -283,7 +283,7 @@ def main(unused_argv):
         save_checkpoints_steps=max(600, FLAGS.iterations_per_loop),
         tpu_config=tpu_config.TPUConfig(
             iterations_per_loop=FLAGS.iterations_per_loop,
-            num_shards=FLAGS.num_cores,
+            num_shards=FLAGS.num_cores))
             # per_host_input_for_training=tpu_config.InputPipelineConfig.PER_HOST_V2))  # pylint: disable=line-too-long
 
 
