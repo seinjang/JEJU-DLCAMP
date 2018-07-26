@@ -15,7 +15,7 @@ Sometime it really hard to find proper place to go.
 What if, the Recommendation Model can understand where do i want to go and understand location of the place in the map ?
 
 <br/>
-The model will be able to recommend a suitable place according to the **Map** you are currently in and **Keywork** you want to go.
+The model will be able to recommend a suitable place according to the **MAP** you are currently in and **Keyword** you want to go.
 
 
 
