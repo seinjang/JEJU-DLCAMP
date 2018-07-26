@@ -19,12 +19,12 @@ The Model will be able to recommend a suitable place according to the **Location
 
 ## Model Architecture
 
-We using [Relation Networks (A simple neural network module for relational reasoning)](http://papers.nips.cc/paper/7082-a-simple-neural-network-module-for-relational-reasoning) basically contains **CNN** for Image processing, and **RN** for Relational reasoning between two object(Image, Text).
+We using [Relation Networks](http://papers.nips.cc/paper/7082-a-simple-neural-network-module-for-relational-reasoning) basically contains **CNN** for Image processing, and **RN** for Relational reasoning between two object(Image, Text).
 <p align="center">
     <img src="Figure/RN_model.png" height="350"/>
 </p>
 
-And also using [Wild Relation Network (Measuring abstract reasoning in neural networks)](http://proceedings.mlr.press/v80/santoro18a.html) for improve the recommendation accuracy.
+And also using [Wild Relation Network](http://proceedings.mlr.press/v80/santoro18a.html) for improve the recommendation accuracy.
 <p align="center">
     <img src="Figure/WReN_model.png" height="350"/>
 </p>
@@ -111,11 +111,13 @@ First task of the Project, we take only 10 places that located in the map and re
 ## Related works
 
 * [A Simple Neural Network Module for Relational Reasoning](https://arxiv.org/abs/1706.01427) by Santoro, Adam, et al.
-* [Measuring abstract reasoning in neural networks](http://proceedings.mlr.press/v80/santoro18a.html) by Santoro, Adam, et al.
+* [Measuring Abstract Reasoning in Neural Networks](http://proceedings.mlr.press/v80/santoro18a.html) by Santoro, Adam, et al.
+
 
 ## Acknowledge
 
 This was supported by [Deep Learning Camp Jeju 2018](http://jeju.dlcamp.org/2018/) which was organized by [TensorFlow Korea User Group](https://facebook.com/groups/TensorFlowKR/).
+
 
 ## Author
 
