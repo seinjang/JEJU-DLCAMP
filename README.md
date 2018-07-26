@@ -107,3 +107,16 @@ First task of the Project, we take only 10 places that located in the map and re
 | Top - 3 Accuracy | **76%** | 70% | 70% |
 
 </br></br></br>
+
+## Related works
+
+* [A Simple Neural Network Module for Relational Reasoning](https://arxiv.org/abs/1706.01427) by Santoro, Adam, et al.
+* [Measuring abstract reasoning in neural networks](http://proceedings.mlr.press/v80/santoro18a.html) by Santoro, Adam, et al.
+
+## Acknowledge
+
+This was supported by [Deep Learning Camp Jeju 2018](http://jeju.dlcamp.org/2018/) which was organized by [TensorFlow Korea User Group](https://facebook.com/groups/TensorFlowKR/).
+
+## Author
+
+Sein Jang
