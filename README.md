@@ -12,11 +12,11 @@ Jeju Island POI(point-of-interst) [Dataset](https://www.data.go.kr/dataset/15004
 Sometime it really hard to find proper place to go.
 
 
-What if, the Recommendation Model can understand where do i want to go and understand location of the place in the map ?
+What if, the Model can understand where do i want to go and understand location of the place in the map ?
 
 <br/>
 The model will be able to recommend a suitable place according to the **CNN** you are currently in and **CNN** you want to go.
-
+We using Relation Networks Model basically contains **CNN** for Image processing, and **RN** for Relational reasoning between two object(Image, Test).<br/><br/><br/>
 
 
 ### Model Architecture
@@ -35,7 +35,7 @@ We using Relation Networks Model basically contains **CNN** for Image processing
 
 # 10 - Class Dataset
 <p align="center">
-    <img src="Figure/10class_dataset.png" height="350"/>
+    <img src="Figure/10class_dataset_1.png" height="350"/>
 </p>
 The data contains the following information
 * Latitude
@@ -48,7 +48,6 @@ At the beginning of the project, I decided to only consider the POI for restaura
 
 Also, the center(user position) **location** of the image, boundary location information and the location information of restaurant and cafe in Jeju Island are required for input.
 
-
 Among the various **Keyword**, I will focus on the following Keyword first.<br/>
 * Restaurant ?
 * Cafe ?
@@ -57,6 +56,6 @@ Among the various **Keyword**, I will focus on the following Keyword first.<br/>
 * Cafe nearby restaurant ?
 * Restaurant nearby cafe ?
 
-The possible answer is a softmax vector whose with probability for POIs
+The possible **Answer** is a softmax vector whose with probability for POIs
 
 *[probability of POI 1, probability of POI 2, probability of POI 3,...,probability of POI n]*
