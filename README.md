@@ -18,14 +18,16 @@ The Model will be able to recommend a suitable place according to the **Location
 
 
 ## Model Architecture
-<p align="center">
-    <img src="Figure/first_model.png" height="350"/>
-</p>
-
 
 We using [Relation Networks (A simple neural network module for relational reasoning)](http://papers.nips.cc/paper/7082-a-simple-neural-network-module-for-relational-reasoning) basically contains **CNN** for Image processing, and **RN** for Relational reasoning between two object(Image, Text).
+<p align="center">
+    <img src="Figure/RN_model.png" height="350"/>
+</p>
 
-And also using [Wild Relation Network (Measuring abstract reasoning in neural networks)](http://proceedings.mlr.press/v80/santoro18a.html) for improve the recommendation accuracy. <br/><br/><br/>
+And also using [Wild Relation Network (Measuring abstract reasoning in neural networks)](http://proceedings.mlr.press/v80/santoro18a.html) for improve the recommendation accuracy.
+<p align="center">
+    <img src="Figure/WReN_model.png" height="350"/>
+</p>
 
 
 
