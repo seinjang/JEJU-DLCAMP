@@ -15,7 +15,7 @@ Sometime it really hard to find proper place to go.
 What if, the Recommendation Model can understand where do i want to go and understand location of the place in the map ?
 
 <br/>
-The model will be able to recommend a suitable place according to the **MAP** you are currently in and **Keyword** you want to go.
+The model will be able to recommend a suitable place according to the **CNN** you are currently in and **CNN** you want to go.
 
 
 
@@ -28,12 +28,12 @@ We using Relation Networks Model basically contains **CNN** for Image processing
 
 
 ### Dataset
-1) 2 - Class Dataset
+# 2 - Class Dataset
 <p align="center">
     <img src="Figure/2class_dataset.png" height="350"/>
 </p>
 
-2) 10 - Class Dataset
+# 10 - Class Dataset
 <p align="center">
     <img src="Figure/10class_dataset.png" height="350"/>
 </p>
@@ -44,23 +44,19 @@ The data contains the following information
 * Place name
 * Place Adress<br/><br/>
 
-At the beginning of the project, I decided to only consider the POI for restaurants in Jeju Island. Each **Image** has a number of 
-POIs which marked with red marker. Here are some examples of images.
-<img src="/Figure/image_sample.png" alt="drawing"/>
+At the beginning of the project, I decided to only consider the POI for restaurant and cafe in Jeju Island. Each **Image** has a number of POIs which marked with red(restaurant), green(cafe) marker.
 
-Also, the center(user position) **location** of the image, boundary location information and the location information of all restaurants POI in Jeju Island are required for input.
-
-*{center : latitude, longitude}<br/>
-{boundary : latitude(left), latitude(right), longitude(up), longitude(down)}<br/>
-{POI 1: latitude, longitude}, {POI2 : latitude, longitude},...*
+Also, the center(user position) **location** of the image, boundary location information and the location information of restaurant and cafe in Jeju Island are required for input.
 
 
-Among the various **Questions**, I will focus on the following questions first.<br/>
-* Where is the beachfront restaurant ?
-* Where is the nearest restaurant ?
-* Where is the restaurant with a nearby cafe ?
-* Where is the beachfront restaurant with a nearby cafe ?
+Among the various **Keyword**, I will focus on the following Keyword first.<br/>
+* Restaurant ?
+* Cafe ?
+* Beachfront ?
+* Near ?
+* Cafe nearby restaurant ?
+* Restaurant nearby cafe ?
 
-The possible answer is a softmax vector whose with probability for all POIs
+The possible answer is a softmax vector whose with probability for POIs
 
 *[probability of POI 1, probability of POI 2, probability of POI 3,...,probability of POI n]*
