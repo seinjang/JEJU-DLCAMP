@@ -112,6 +112,7 @@ First task of the Project, we take only 10 places that located in the map and re
 
 * [A Simple Neural Network Module for Relational Reasoning](https://arxiv.org/abs/1706.01427) by Santoro, Adam, et al.
 * [Measuring Abstract Reasoning in Neural Networks](http://proceedings.mlr.press/v80/santoro18a.html) by Santoro, Adam, et al.
+* [Relation-Network-Tensorflow](https://github.com/gitlimlab/Relation-Network-Tensorflow) by Shao-Hua Sun
 
 
 ## Acknowledge
