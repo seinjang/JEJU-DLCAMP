@@ -13,13 +13,12 @@ Sometime it really hard to find proper place to go.
 
 
 What if, the Model can understand where do i want to go and understand location of the place in the map ?
-
 <br/>
 The Model will be able to recommend a suitable place according to the **Location** you are currently in and **Keyword** you want to go.
+<br/>
 
 
-
-### Model Architecture
+## Model Architecture
 <p align="center">
     <img src="Figure/first_model.png" height="350"/>
 </p>
@@ -28,7 +27,7 @@ We using Relation Networks Model basically contains **CNN** for Image processing
 
 
 
-### Dataset
+## Dataset
 
 The data contains the following information
 
@@ -54,12 +53,12 @@ The possible **Answer** is a softmax vector whose with probability for POIs
 *[probability of POI 1, probability of POI 2, probability of POI 3,...,probability of POI n]*
 
 
-# 2 - Class Dataset
+## 2 - Class Dataset
 <p align="center">
     <img src="Figure/2class_dataset.png" height="350"/>
 </p>
 
-# 10 - Class Dataset
+## 10 - Class Dataset
 <p align="center">
     <img src="Figure/10class_dataset_1.png" height="350"/>
 </p>
