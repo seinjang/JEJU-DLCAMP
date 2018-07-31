@@ -118,8 +118,14 @@ First task of the Project, we take only 10 places that located in the map and re
 ## Acknowledge
 
 This was supported by [Deep Learning Camp Jeju 2018](http://jeju.dlcamp.org/2018/) which was organized by [TensorFlow Korea User Group](https://facebook.com/groups/TensorFlowKR/).
+Thank you to my mentor [SOURABH BAJAJ](https://sourabhbajaj.com/) who gave me the best mentoring and thank you everyone, that I met during the camp.
 
 
 ## Author
 
 Sein Jang
+
+
+## License
+
+© [Sein Jang], 2018. Licensed under the [MIT](LICENSE) License.
